@@ -91,10 +91,12 @@ public class ExcelEmailBuilder {
 			    map.put("gdit.com", 0);
 			    map.put("ge.com", 0);
 			    map.put("genworth.com", 0);
+			    map.put("hanloninvest.com", 0);
 			    map.put("harris.com", 0);
 			    map.put("healthesystems.com", 0);
 			    map.put("hilton.com", 0);
 			    map.put("ihg.com", 0);
+			    map.put("iassoftware.com", 0);
 			    map.put("imshealth.com", 0);
 			    map.put("inovalon.com", 0);
 			    map.put("jmfamily.com", 0);
@@ -126,7 +128,10 @@ public class ExcelEmailBuilder {
 			    map.put("transcore.com", 0);
 			    map.put("rccl.com", 0);
 			    map.put("sas.com", 0);
+			    map.put("sbgnet.com", 0);
 			    map.put("sita.aero", 0);
+			    map.put("slhn.org", 0);
+			    map.put("southernco.com", 0);
 			    map.put("subaru.com", 0);
 			    map.put("sungardas.com", 0);
 			    map.put("sykes.com", 0);
@@ -572,6 +577,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("harris")
 							|| titleName.contains("harris")) {
 						domainName = "harris.com";
+					} else if (accountName.contains("hanlon")
+							|| currentName.contains("hanlon")
+							|| titleName.contains("hanlon")) {
+						domainName = "hanloninvest.com";
 					} else if (accountName.contains("health e")
 							|| currentName.contains("health e")
 							|| titleName.contains("health e")) {
@@ -580,6 +589,13 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("hilton")
 							|| titleName.contains("hilton")) {
 						domainName = "hilton.com";
+					} else if (accountName.contains("ias software") 
+							|| accountName.contains("interactive advisory")
+							|| currentName.contains("ias software") 
+							|| currentName.contains("interactive advisory")
+							|| titleName.contains("ias software") 
+							|| titleName.contains("interactive advisory")) {
+						domainName = "iassoftware.com";
 					} else if (accountName.contains("ihg") 
 							|| accountName.contains("intercontinental hotels")
 							|| currentName.contains("ihg") 
@@ -738,10 +754,31 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("sas")
 							|| titleName.contains("sas")) {
 						domainName = "sas.com";
+					} else if (accountName.contains("st. luke's university health")
+							|| accountName.contains("st lukes university health")
+							|| accountName.contains("st. lukes university health")
+							|| accountName.contains("st luke's university health")
+							|| currentName.contains("st. luke's university health")
+							|| currentName.contains("st lukes university health")
+							|| currentName.contains("st. lukes university health")
+							|| currentName.contains("st luke's university health")
+							|| titleName.contains("st. luke's university health")
+							|| titleName.contains("st lukes university health")
+							|| titleName.contains("st. lukes university health") 
+							|| titleName.contains("st luke's university health")) {
+						domainName = "slhn.org";
 					} else if (accountName.contains("sita")
 							|| currentName.contains("sita")
 							|| titleName.contains("sita")) {
 						domainName = "sita.aero";
+					} else if (accountName.contains("sinclair")
+							|| currentName.contains("sinclair")
+							|| titleName.contains("sinclair")) {
+						domainName = "sbgnet.com";
+					} else if (accountName.contains("southern co")
+							|| currentName.contains("southern co")
+							|| titleName.contains("southern co")) {
+						domainName = "southernco.com";
 					} else if (accountName.contains("subaru")
 							|| currentName.contains("subaru")
 							|| titleName.contains("subaru")) {
@@ -872,6 +909,7 @@ public class ExcelEmailBuilder {
 						case "comscore.com":
 						case "darden.com":
 						case "footballfanatics.com":
+						case "hanloninvest.com":
 						case "healthesystems.com":
 						case "imshealth.com":
 						case "inovalon.com":
@@ -883,6 +921,8 @@ public class ExcelEmailBuilder {
 						case "subaru.com":
 						case "na.ko.com":
 						case "hersheys.com":
+						case "sbgnet.com":
+						case "southernco.com":
 						case "tsys.com":
 						case "ups.com":
 						case "verisign.com":
@@ -937,6 +977,7 @@ public class ExcelEmailBuilder {
 						case "genworth.com":
 						case "harris.com":
 						case "hilton.com":
+						case "iassoftware.com":
 						case "ihg.com":
 						case "jmfamily.com":
 						case "lfg.com":
@@ -1001,6 +1042,7 @@ public class ExcelEmailBuilder {
 							
 						// Cases with first 6 letters of LastName + FirstInitial@domainName
 						case "labcorp.com":
+						case "slhn.org":
 							nonEmptyRows++;
 							if (lastName == null) {
 								email = firstName + "@" + domainName;

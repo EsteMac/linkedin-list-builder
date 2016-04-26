@@ -4,10 +4,12 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+
 import javax.swing.JFileChooser;
 
 /**
@@ -1021,8 +1023,8 @@ public class ExcelEmailBuilder {
 				DecimalFormat df = new DecimalFormat("#.##");
 				df.setRoundingMode(RoundingMode.HALF_UP);
 				
-				// Sort map of count of successful domain matches
-				Map<String, Integer> ascendingMap = sortByValue(map);
+				// Sort map of count of successful domain matches (from largest to smallest)
+				Map<String, Integer> descendingMap = sortByValue(map);
 				
 				// Log stats to the console
 				int goodContacts = nonEmptyRows 
@@ -1032,17 +1034,20 @@ public class ExcelEmailBuilder {
 						+ df.format(100 - (((double) domainsNotFound 
 								/ (goodContacts + domainsNotFound)) * 100)) 
 								+ "% of contacts (" + goodContacts + " matched with "
-								+ domainsNotFound + " not matched).");
-				System.out.println("Removed " + linkedinMembers + " 'LinkedIn Members', " 
-						+ emptyRows + " empty rows and " + duplicateContacts 
-						+ " duplicate entries.");
+								+ domainsNotFound + " not matched)");
+				System.out.println("Removed " + emptyRows + " empty rows, " 
+						+ duplicateContacts + " duplicate entries, and " 
+						+ linkedinMembers + " 'LinkedIn Members'");
 				
-				// Log total number of results per account
-				System.out.println();
-				for (String name : ascendingMap.keySet()) {
+				// Log total number of results per account (from largest to smallest)
+				System.out.print("Top accounts for this search: ");
+				for (String name : descendingMap.keySet()) {
 					String key = name;
-					String value = ascendingMap.get(name).toString();
-					System.out.println(key + ": " + value);
+					int valueInt = descendingMap.get(name);
+					String valueString = descendingMap.get(name).toString();
+					if (valueInt != 0 && !key.contains("NONE FOUND")) {
+						System.out.print(key + ": " + valueString + " --> ");
+					}
 				}
 				
 				// Resize new columns to fit data
@@ -1081,14 +1086,12 @@ public class ExcelEmailBuilder {
 
 	}
 	
-	// Helper method to sort Map by value from smallest to largest
+	// Helper method to sort Map by value from largest to smallest
 	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
 	    Map<K, V> result = new LinkedHashMap<>();
 	    Stream<Map.Entry<K, V>> st = map.entrySet().stream();
-	
-	    st.sorted(Map.Entry.comparingByValue())
+	    st.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 	        .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
-	
 	    return result;
 	}
 	

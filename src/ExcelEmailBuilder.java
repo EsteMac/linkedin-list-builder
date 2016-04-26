@@ -4,8 +4,10 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 import javax.swing.JFileChooser;
 
 /**
@@ -15,7 +17,6 @@ import javax.swing.JFileChooser;
  * Currently only supports xlsx input files
  */
 public class ExcelEmailBuilder {
-	
 
 	public static void main(String[] args) {
 		// Set column index containing contact full names. All other columns are referred to relative to this one
@@ -38,6 +39,115 @@ public class ExcelEmailBuilder {
 				String domainName;
 				String currentName;
 				String titleName;
+				
+				// HashMap to store the number of unique domain / email identified per named account
+			    Map<String, Integer> map = new HashMap<String, Integer>();
+			    map.put("aarp.org", 0);
+			    map.put("advance-auto.com", 0);
+			    map.put("ahss.org", 0);
+			    map.put("aflac.com", 0);
+			    map.put("altisource.com", 0);
+			    map.put("amerisourcebergen.com", 0);
+			    map.put("astrazeneca.com", 0);
+			    map.put("autonation.com", 0);
+			    map.put("avidxchange.com", 0);
+			    map.put("baycare.org", 0);
+			    map.put("bbandt.com", 0);
+			    map.put("benefitfocus.com", 0);
+			    map.put("blackbaud.com", 0);
+			    map.put("blackboard.com", 0);
+			    map.put("bcbsfl.com", 0);
+			    map.put("bcbsnc.com", 0);
+			    map.put("bdpint.com", 0);
+			    map.put("carecorenational.com", 0);
+			    map.put("carefirst.com", 0);
+			    map.put("carmax.com", 0);
+			    map.put("carnival.com", 0);
+			    map.put("catalinamarketing.com", 0);
+			    map.put("citrix.com", 0);
+			    map.put("comscore.com", 0);
+			    map.put("autotrader.com", 0);
+			    map.put("csx.com", 0);
+			    map.put("danaher.com", 0);
+			    map.put("darden.com", 0);
+			    map.put("dell.com", 0);
+			    map.put("delta.com", 0);
+			    map.put("dollartree.com", 0);
+			    map.put("dominionenterprises.com", 0);
+			    map.put("duke-energy.com", 0);
+			    map.put("usa.dupont.com", 0);
+			    map.put("equifax.com", 0);
+			    map.put("footballfanatics.com", 0);
+			    map.put("fanniemae.com", 0);
+			    map.put("fnf.com", 0);
+			    map.put("fiserv.com", 0);
+			    map.put("fpl.com", 0);
+			    map.put("freddiemac.com", 0);
+			    map.put("freedommortgage.com", 0);
+			    map.put("fticonsulting.com", 0);
+			    map.put("geico.com", 0);
+			    map.put("gdit.com", 0);
+			    map.put("ge.com", 0);
+			    map.put("genworth.com", 0);
+			    map.put("harris.com", 0);
+			    map.put("healthesystems.com", 0);
+			    map.put("hilton.com", 0);
+			    map.put("ihg.com", 0);
+			    map.put("imshealth.com", 0);
+			    map.put("inovalon.com", 0);
+			    map.put("jmfamily.com", 0);
+			    map.put("labcorp.com", 0);
+			    map.put("lfg.com", 0);
+			    map.put("lowes.com", 0);
+			    map.put("macys.com", 0);
+			    map.put("manh.com", 0);
+			    map.put("markelcorp.com", 0);
+			    map.put("marriott.com", 0);
+			    map.put("effem.com", 0);
+			    map.put("masonite.com", 0);
+			    map.put("mckesson.com", 0);
+			    map.put("merck.com", 0);
+			    map.put("microstrategy.com", 0);
+			    map.put("moffitt.org", 0);
+			    map.put("mohawkind.com", 0);
+			    map.put("nascar.com", 0);
+			    map.put("underarmour.com", 0);
+			    map.put("navyfederal.org", 0);
+			    map.put("ncr.com", 0);
+			    map.put("neustar.biz", 0);
+			    map.put("nielsen.com", 0);
+			    map.put("ngc.com", 0);
+			    map.put("officedepot.com", 0);
+			    map.put("praintl.com", 0);
+			    map.put("publix.com", 0);
+			    map.put("raymondjames.com", 0);
+			    map.put("transcore.com", 0);
+			    map.put("rccl.com", 0);
+			    map.put("sas.com", 0);
+			    map.put("sita.aero", 0);
+			    map.put("subaru.com", 0);
+			    map.put("sungardas.com", 0);
+			    map.put("sykes.com", 0);
+			    map.put("synchronoss.com", 0);
+			    map.put("syniverse.com", 0);
+			    map.put("troweprice.com", 0);
+			    map.put("chicos.com", 0);
+			    map.put("email.chop.edu", 0);
+			    map.put("na.ko.com", 0);
+			    map.put("hersheys.com", 0);
+			    map.put("homedepot.com", 0);
+			    map.put("vanguard.com", 0);
+			    map.put("hcsc.net", 0);
+			    map.put("travelport.com", 0);
+			    map.put("tsys.com", 0);
+			    map.put("ultimatesoftware.com", 0);
+			    map.put("ugcorp.com", 0);
+			    map.put("ups.com", 0);
+			    map.put("verisign.com", 0);
+			    map.put("vertexinc.com", 0);
+			    map.put("wfu.edu", 0);
+			    map.put("wellcare.com", 0);
+			    map.put("NONE FOUND", 0);
 				
 				// style white fonts
 		        Font whiteFont = workbook.createFont();
@@ -90,6 +200,7 @@ public class ExcelEmailBuilder {
 				// Remove empty rows
 				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
 					Row row = sheet.getRow(r);
+					// Check for empty rows
 				    if(row == null){
 				        sheet.shiftRows(r + 1, sheet.getLastRowNum(), -1);
 				        emptyRows++;
@@ -98,10 +209,9 @@ public class ExcelEmailBuilder {
 				    }
 				}
 				
-				// Iterate row by row starting just below title row
+				// Remove "LinkedIn Member" rows
 				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-					Row row = sheet.getRow(r);		
-				    
+					Row row = sheet.getRow(r);
 					// Check for entries with names listed as "LinkedIn" and remove them
 					Cell linkedinCell = row.getCell(nameColumnIndex);
 					if (linkedinCell.toString().toLowerCase().contains("linkedin")) {
@@ -115,7 +225,11 @@ public class ExcelEmailBuilder {
 						r--;
 						continue;
 					}
-					
+				}
+				
+				// Remove duplicate rows
+				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+					Row row = sheet.getRow(r);
 					// Check for duplicate entries and remove them
 					Cell checkCell = row.getCell(nameColumnIndex);
 					Cell currentAdjacentCell = row.getCell(nameColumnIndex + 1);
@@ -136,6 +250,11 @@ public class ExcelEmailBuilder {
 							r--;
 						} 
 					}
+				}
+				
+				// Iterate row by row and assign domain / email addresses
+				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+					Row row = sheet.getRow(r);		
 				    
 					// Split full name into separate cells
 					fullName = row.getCell(nameColumnIndex).toString();
@@ -281,7 +400,7 @@ public class ExcelEmailBuilder {
 					} else if (accountName.contains("bdp")
 							|| currentName.contains("bdp")
 							|| titleName.contains("bdp")) {
-						domainName = "carecorenational.com";
+						domainName = "bdpint.com";
 					} else if (accountName.contains("carecore")
 							|| currentName.contains("carecore")
 							|| titleName.contains("carecore")) {
@@ -728,7 +847,11 @@ public class ExcelEmailBuilder {
 						domainName = "NONE FOUND";
 						domainsNotFound++;
 					}
+					// Populate company domain
 					domainCell.setCellValue(domainName);
+					
+					// Update the HashMap with number of domain names identified
+					map.put(domainName, map.get(domainName) + 1);
 					
 					// Create email addresses
 					Cell emailCell = row.createCell(nameColumnIndex + 12);
@@ -898,6 +1021,9 @@ public class ExcelEmailBuilder {
 				DecimalFormat df = new DecimalFormat("#.##");
 				df.setRoundingMode(RoundingMode.HALF_UP);
 				
+				// Sort map of count of successful domain matches
+				Map<String, Integer> ascendingMap = sortByValue(map);
+				
 				// Log stats to the console
 				int goodContacts = nonEmptyRows 
 						- linkedinMembers - duplicateContacts;
@@ -910,6 +1036,14 @@ public class ExcelEmailBuilder {
 				System.out.println("Removed " + linkedinMembers + " 'LinkedIn Members', " 
 						+ emptyRows + " empty rows and " + duplicateContacts 
 						+ " duplicate entries.");
+				
+				// Log total number of results per account
+				System.out.println();
+				for (String name : ascendingMap.keySet()) {
+					String key = name;
+					String value = ascendingMap.get(name).toString();
+					System.out.println(key + ": " + value);
+				}
 				
 				// Resize new columns to fit data
 				sheet.autoSizeColumn(nameColumnIndex + 8);
@@ -945,6 +1079,17 @@ public class ExcelEmailBuilder {
 
 		}
 
+	}
+	
+	// Helper method to sort Map by value from smallest to largest
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+	    Map<K, V> result = new LinkedHashMap<>();
+	    Stream<Map.Entry<K, V>> st = map.entrySet().stream();
+	
+	    st.sorted(Map.Entry.comparingByValue())
+	        .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+	
+	    return result;
 	}
 	
 }

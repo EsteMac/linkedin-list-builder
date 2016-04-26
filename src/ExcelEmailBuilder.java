@@ -84,16 +84,58 @@ public class ExcelEmailBuilder {
 				// where the name shows up as "LinkedIn Member"
 				int linkedinMembers = 0;
 				
-				// Iterate row by row starting just below title row
+				// Keeps track of # of duplicates
+				int duplicateContacts = 0;
+				
+				// Remove empty rows
 				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-					Row row = sheet.getRow(r);				
-					// Remove empty rows
+					Row row = sheet.getRow(r);
 				    if(row == null){
 				        sheet.shiftRows(r + 1, sheet.getLastRowNum(), -1);
 				        emptyRows++;
 				        r--;
 				        continue;
 				    }
+				}
+				
+				// Iterate row by row starting just below title row
+				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+					Row row = sheet.getRow(r);		
+				    
+					// Check for entries with names listed as "LinkedIn" and remove them
+					Cell linkedinCell = row.getCell(nameColumnIndex);
+					if (linkedinCell.toString().toLowerCase().contains("linkedin")) {
+						linkedinMembers++;
+						System.out.println("NON-CONNECTED 'LinkedIn Member' ENTRY REMOVED: " + linkedinCell.toString());
+						// Clear row with no name or connections
+						sheet.removeRow(row);
+						// Remove cleared empty row
+						sheet.shiftRows(r + 1, sheet.getLastRowNum(), -1);
+						// Reset row counter
+						r--;
+						continue;
+					}
+					
+					// Check for duplicate entries and remove them
+					Cell checkCell = row.getCell(nameColumnIndex);
+					Cell currentAdjacentCell = row.getCell(nameColumnIndex + 1);
+					for (int c = (r + 1); c <= sheet.getLastRowNum(); c++) {
+						Row compareRow = sheet.getRow(c);
+						Cell compareCell = compareRow.getCell(nameColumnIndex);
+						Cell compareAdjacentCell = compareRow.getCell(nameColumnIndex + 1);
+						// Compare content of 2 cells per contact to ensure it's a duplicate
+						if ((checkCell.toString() == compareCell.toString())
+								&& (currentAdjacentCell.toString() == compareAdjacentCell.toString())) {
+							duplicateContacts++;
+							System.out.println("DUPLICATE ENTRY REMOVED: " + compareCell.toString());
+							// Clear duplicate row
+							sheet.removeRow(compareRow);
+							// Remove cleared empty row
+							sheet.shiftRows(c + 1, sheet.getLastRowNum(), -1);
+							// Reset row counter
+							r--;
+						} 
+					}
 				    
 					// Split full name into separate cells
 					fullName = row.getCell(nameColumnIndex).toString();
@@ -852,59 +894,13 @@ public class ExcelEmailBuilder {
 					emailCell.setCellValue(email);
 				}
 				
-				// Initialize list to store duplicate entries
-				ArrayList<String> duplicateList = new ArrayList<>();
-				
-				// Check for duplicate entries and remove them
-				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-					Row currentRow = sheet.getRow(r);
-					Cell currentCell = currentRow.getCell(nameColumnIndex);
-					Cell currentAdjacentCell = currentRow.getCell(nameColumnIndex + 1);
-					for (int c = (r + 1); c <= sheet.getLastRowNum(); c++) {
-						Row compareRow = sheet.getRow(c);
-						Cell compareCell = compareRow.getCell(nameColumnIndex);
-						Cell compareAdjacentCell = compareRow.getCell(nameColumnIndex + 1);
-						// Compare content of 2 cells per contact to ensure it's a duplicate
-						if ((currentCell.toString() == compareCell.toString())
-								&& (currentAdjacentCell.toString() == compareAdjacentCell.toString())) {
-							duplicateList.add(compareCell.toString());
-							System.out.println("DUPLICATE ENTRY REMOVED: " + compareCell.toString());
-							// Clear duplicate row
-							sheet.removeRow(compareRow);
-							// Remove cleared empty row
-							sheet.shiftRows(c + 1, sheet.getLastRowNum(), -1);
-							// Reset row counter
-							--r;
-						} else {
-							continue;
-						}
-					}
-				}
-				
-				// Check for entries with names listed as "LinkedIn" and remove them
-				for (int r = 1; r <= sheet.getLastRowNum(); r++) {
-					Row currentRow = sheet.getRow(r);
-					Cell currentCell = currentRow.getCell(nameColumnIndex);
-					// Check for names listed as "LinkedIn" and remove them
-					if (currentCell.toString().toLowerCase().contains("linkedin")) {
-						linkedinMembers++;
-						System.out.println("NON-CONNECTED 'LinkedIn Member' ENTRY REMOVED: " + currentCell.toString());
-						// Clear row with no name or connections
-						sheet.removeRow(currentRow);
-						// Remove cleared empty row
-						sheet.shiftRows(r + 1, sheet.getLastRowNum(), -1);
-						// Reset row counter
-						--r;
-					}
-				}
-				
 				// Format success percentage
 				DecimalFormat df = new DecimalFormat("#.##");
 				df.setRoundingMode(RoundingMode.HALF_UP);
 				
 				// Log stats to the console
 				int goodContacts = nonEmptyRows 
-						- linkedinMembers - duplicateList.size();
+						- linkedinMembers - duplicateContacts;
 				System.out.println();
 				System.out.println("Successfully matched domain/email for " 
 						+ df.format(100 - (((double) domainsNotFound 
@@ -912,7 +908,7 @@ public class ExcelEmailBuilder {
 								+ "% of contacts (" + goodContacts + " matched with "
 								+ domainsNotFound + " not matched).");
 				System.out.println("Removed " + linkedinMembers + " 'LinkedIn Members', " 
-						+ emptyRows + " empty rows and " + duplicateList.size() 
+						+ emptyRows + " empty rows and " + duplicateContacts 
 						+ " duplicate entries.");
 				
 				// Resize new columns to fit data

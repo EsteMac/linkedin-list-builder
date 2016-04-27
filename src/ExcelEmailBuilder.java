@@ -52,6 +52,7 @@ public class ExcelEmailBuilder {
 			    map.put("ahss.org", 0);
 			    map.put("aflac.com", 0);
 			    map.put("altisource.com", 0);
+			    map.put("audiusa.com", 0);
 			    map.put("amerisourcebergen.com", 0);
 			    map.put("astrazeneca.com", 0);
 			    map.put("autonation.com", 0);
@@ -155,6 +156,7 @@ public class ExcelEmailBuilder {
 			    map.put("ups.com", 0);
 			    map.put("verisign.com", 0);
 			    map.put("vertexinc.com", 0);
+			    map.put("vw.com", 0);
 			    map.put("wfu.edu", 0);
 			    map.put("wellcare.com", 0);
 			    map.put("NONE FOUND", 0);
@@ -356,6 +358,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("astrazeneca")
 							|| titleName.contains("astrazeneca")) {
 						domainName = "astrazeneca.com";
+					} else if (accountName.contains("audi")
+							|| currentName.contains("audi")
+							|| titleName.contains("audi")) {
+						domainName = "audiusa.com";
 					} else if (accountName.contains("autonation")
 							|| currentName.contains("autonation")
 							|| titleName.contains("autonation")) {
@@ -877,6 +883,13 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("vertex")
 							|| titleName.contains("vertex")) {
 						domainName = "vertexinc.com";
+					} else if (accountName.contains("volkswagen")
+							|| accountName.contains("vw")
+							|| currentName.contains("volkswagen")
+							|| currentName.contains("vw")
+							|| titleName.contains("volkswagen")
+							|| titleName.contains("vw")) {
+						domainName = "vw.com";
 					} else if (accountName.contains("wake forest")
 							|| currentName.contains("wake forest")
 							|| titleName.contains("wake forest")) {
@@ -905,6 +918,7 @@ public class ExcelEmailBuilder {
 						case "aarp.org":
 						case "aflac.com":
 						case "amerisourcebergen.com":
+						case "audiusa.com":
 						case "avidxchange.com":
 						case "bbandt.com":
 						case "carecorenational.com":
@@ -1006,6 +1020,7 @@ public class ExcelEmailBuilder {
 						case "travelport.com":
 						case "ugcorp.com":
 						case "vertexinc.com":
+						case "vw.com":
 						case "wellcare.com":
 							nonEmptyRows++;
 							email = firstName + "." + lastName + "@" + domainName; 

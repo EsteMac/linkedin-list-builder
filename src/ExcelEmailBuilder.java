@@ -64,7 +64,7 @@ public class ExcelEmailBuilder {
 			    map.put("blackboard.com", 0);
 			    map.put("bcbsfl.com", 0);
 			    map.put("bcbsnc.com", 0);
-			    map.put("bdpint.com", 0);
+			    map.put("bdpinternational.com", 0);
 			    map.put("carecorenational.com", 0);
 			    map.put("carefirst.com", 0);
 			    map.put("carmax.com", 0);
@@ -416,7 +416,7 @@ public class ExcelEmailBuilder {
 					} else if (accountName.contains("bdp")
 							|| currentName.contains("bdp")
 							|| titleName.contains("bdp")) {
-						domainName = "bdpint.com";
+						domainName = "bdpinternational.com";
 					} else if (accountName.contains("carecore")
 							|| currentName.contains("carecore")
 							|| titleName.contains("carecore")) {

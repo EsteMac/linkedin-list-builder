@@ -6,8 +6,10 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import javax.swing.JFileChooser;
@@ -31,6 +33,7 @@ public class ExcelEmailBuilder {
 			try {
 				Workbook workbook = new XSSFWorkbook(new FileInputStream(fileChooser.getSelectedFile()));
 				Sheet sheet = workbook.getSheetAt(0);
+				Sheet summarySheet = workbook.createSheet("Summary");
 				
 				// Strings used to build email addresses
 				String fullName;
@@ -1092,12 +1095,41 @@ public class ExcelEmailBuilder {
 					}
 				}
 				
-				// Resize new columns to fit data
+				// Resize new columns on main sheet to fit data
 				sheet.autoSizeColumn(nameColumnIndex + 8);
 				sheet.autoSizeColumn(nameColumnIndex + 9);
 				sheet.autoSizeColumn(nameColumnIndex + 10);
 				sheet.autoSizeColumn(nameColumnIndex + 11);
 				sheet.autoSizeColumn(nameColumnIndex + 12);
+				
+				// Create the title row for summary sheet
+				Row summaryTitleRow = summarySheet.createRow(0);
+				summaryTitleRow.createCell(0).setCellValue("Domain");
+				summaryTitleRow.createCell(1).setCellValue("Total Found");
+				
+				// In summary sheet enter total number of results per account (from largest to smallest)
+				Iterator<Entry<String, Integer>> it = descendingMap.entrySet().iterator();
+				for (int r = 1; it.hasNext(); r++) {
+					@SuppressWarnings("rawtypes")
+					Map.Entry pair = (Map.Entry) it.next();
+					Row row = summarySheet.createRow(r);
+					
+					// No need to rank NONE FOUND
+				    if(pair.getKey().toString().contains("NONE FOUND")){
+				        r--;
+				        continue;
+				    }
+				    
+					Cell domainCell = row.createCell(0);
+					domainCell.setCellValue(pair.getKey().toString());
+					
+					Cell totalCell = row.createCell(1);
+					totalCell.setCellValue((int) pair.getValue());
+				}
+				
+				// Resize columns on summary sheet to fit data
+				summarySheet.autoSizeColumn(0);
+				summarySheet.autoSizeColumn(1);
 	        
 				// Create new file from input file data
 		        try {

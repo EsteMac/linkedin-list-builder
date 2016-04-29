@@ -50,8 +50,10 @@ public class ExcelEmailBuilder {
 			    map.put("aarp.org", 0);
 			    map.put("advance-auto.com", 0);
 			    map.put("ahss.org", 0);
+			    map.put("airproducts.com", 0);
 			    map.put("aflac.com", 0);
 			    map.put("altisource.com", 0);
+			    map.put("aramark.com", 0);
 			    map.put("audiusa.com", 0);
 			    map.put("amerisourcebergen.com", 0);
 			    map.put("astrazeneca.com", 0);
@@ -70,6 +72,7 @@ public class ExcelEmailBuilder {
 			    map.put("carmax.com", 0);
 			    map.put("carnival.com", 0);
 			    map.put("catalinamarketing.com", 0);
+			    map.put("chubb.com", 0);
 			    map.put("citrix.com", 0);
 			    map.put("comscore.com", 0);
 			    map.put("autotrader.com", 0);
@@ -82,9 +85,13 @@ public class ExcelEmailBuilder {
 			    map.put("dominionenterprises.com", 0);
 			    map.put("duke-energy.com", 0);
 			    map.put("usa.dupont.com", 0);
+			    map.put("ebay.com", 0);
+			    map.put("ellucian.com", 0);
+			    map.put("endo.com", 0);
 			    map.put("equifax.com", 0);
 			    map.put("footballfanatics.com", 0);
 			    map.put("fanniemae.com", 0);
+			    map.put("fmc.com", 0);
 			    map.put("fnf.com", 0);
 			    map.put("fiserv.com", 0);
 			    map.put("fpl.com", 0);
@@ -95,12 +102,14 @@ public class ExcelEmailBuilder {
 			    map.put("gdit.com", 0);
 			    map.put("ge.com", 0);
 			    map.put("genworth.com", 0);
+			    map.put("gsk.com", 0);
 			    map.put("hanloninvest.com", 0);
 			    map.put("harris.com", 0);
 			    map.put("healthesystems.com", 0);
 			    map.put("hilton.com", 0);
 			    map.put("ihg.com", 0);
 			    map.put("iassoftware.com", 0);
+			    map.put("ibx.com", 0);
 			    map.put("imshealth.com", 0);
 			    map.put("inovalon.com", 0);
 			    map.put("jmfamily.com", 0);
@@ -128,11 +137,16 @@ public class ExcelEmailBuilder {
 			    map.put("officedepot.com", 0);
 			    map.put("praintl.com", 0);
 			    map.put("publix.com", 0);
+			    map.put("qvc.com", 0);
 			    map.put("raymondjames.com", 0);
+			    map.put("rovicorp.com", 0);
 			    map.put("transcore.com", 0);
 			    map.put("rccl.com", 0);
 			    map.put("sas.com", 0);
 			    map.put("sbgnet.com", 0);
+			    map.put("seic.com", 0);
+			    map.put("siemens.com", 0);
+			    map.put("sig.com", 0);
 			    map.put("sita.aero", 0);
 			    map.put("slhn.org", 0);
 			    map.put("southernco.com", 0);
@@ -141,7 +155,10 @@ public class ExcelEmailBuilder {
 			    map.put("sykes.com", 0);
 			    map.put("synchronoss.com", 0);
 			    map.put("syniverse.com", 0);
+			    map.put("tokiom.com", 0);
+			    map.put("towerswatson.com", 0);
 			    map.put("troweprice.com", 0);
+			    map.put("tycoelectronics.com", 0);
 			    map.put("chicos.com", 0);
 			    map.put("email.chop.edu", 0);
 			    map.put("na.ko.com", 0);
@@ -153,12 +170,15 @@ public class ExcelEmailBuilder {
 			    map.put("tsys.com", 0);
 			    map.put("ultimatesoftware.com", 0);
 			    map.put("ugcorp.com", 0);
+			    map.put("urbanout.com", 0);
 			    map.put("ups.com", 0);
 			    map.put("verisign.com", 0);
 			    map.put("vertexinc.com", 0);
 			    map.put("vw.com", 0);
+			    map.put("wawa.com", 0);
 			    map.put("wfu.edu", 0);
 			    map.put("wellcare.com", 0);
+			    map.put("wlgore.com", 0);
 			    map.put("NONE FOUND", 0);
 				
 				// style white fonts
@@ -346,6 +366,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("aflac")
 							|| titleName.contains("aflac")) {
 						domainName = "aflac.com";
+					} else if (accountName.contains("air products")
+							|| currentName.contains("air products")
+							|| titleName.contains("air products")) {
+						domainName = "airproducts.com";
 					} else if (accountName.contains("altisource")
 							|| currentName.contains("altisource")
 							|| titleName.contains("altisource")) {
@@ -354,6 +378,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("amerisourcebergen")
 							|| titleName.contains("amerisourcebergen")) {
 						domainName = "amerisourcebergen.com";
+					} else if (accountName.contains("aramark")
+							|| currentName.contains("aramark")
+							|| titleName.contains("aramark")) {
+						domainName = "aramark.com";
 					} else if (accountName.contains("astrazeneca")
 							|| currentName.contains("astrazeneca")
 							|| titleName.contains("astrazeneca")) {
@@ -455,6 +483,13 @@ public class ExcelEmailBuilder {
 							|| titleName.contains("autotrader") 
 							|| titleName.contains("ready auto")) {
 						domainName = "autotrader.com";
+					} else if (accountName.contains("chubb")
+							|| accountName.contains("ace group")
+							|| currentName.contains("chubb")
+							|| currentName.contains("ace group")
+							|| titleName.contains("chubb")
+							|| titleName.contains("ace group")) {
+						domainName = "chubb.com";
 					} else if (accountName.contains("csx")
 							|| currentName.contains("csx")
 							|| titleName.contains("csx")) {
@@ -494,6 +529,21 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("dupont")
 							|| titleName.contains("dupont")) {
 						domainName = "usa.dupont.com";
+					} else if (accountName.contains("ebay")
+							|| accountName.contains("radial")
+							|| currentName.contains("ebay")
+							|| currentName.contains("radial")
+							|| titleName.contains("ebay")
+							|| titleName.contains("radial")) {
+						domainName = "ebay.com";
+					} else if (accountName.contains("ellucian")
+							|| currentName.contains("ellucian")
+							|| titleName.contains("ellucian")) {
+						domainName = "ellucian.com";
+					} else if (accountName.contains("endo")
+							|| currentName.contains("endo")
+							|| titleName.contains("endo")) {
+						domainName = "endo.com";
 					} else if (accountName.contains("equifax")
 							|| currentName.contains("equifax")
 							|| titleName.contains("equifax")) {
@@ -582,6 +632,16 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("genworth")
 							|| titleName.contains("genworth")) {
 						domainName = "genworth.com";
+					} else if (accountName.contains("gsk") 
+							|| accountName.contains("glaxosmith")
+							|| accountName.contains("glaxo smith")
+							|| currentName.contains("gsk") 
+							|| currentName.contains("glaxosmith")
+							|| currentName.contains("glaxo smith")
+							|| titleName.contains("gsk") 
+							|| titleName.contains("glaxosmith")
+							|| titleName.contains("glaxosmith")) {
+						domainName = "gsk.com";
 					} else if (accountName.contains("harris")
 							|| currentName.contains("harris")
 							|| titleName.contains("harris")) {
@@ -605,6 +665,13 @@ public class ExcelEmailBuilder {
 							|| titleName.contains("ias software") 
 							|| titleName.contains("interactive advisory")) {
 						domainName = "iassoftware.com";
+					} else if (accountName.contains("ibx") 
+							|| accountName.contains("independence blue")
+							|| currentName.contains("ibx") 
+							|| currentName.contains("independence blue")
+							|| titleName.contains("ibx") 
+							|| titleName.contains("independence blue")) {
+						domainName = "ibx.com";
 					} else if (accountName.contains("ihg") 
 							|| accountName.contains("intercontinental hotels")
 							|| currentName.contains("ihg") 
@@ -744,6 +811,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("publix")
 							|| titleName.contains("publix")) {
 						domainName = "publix.com";
+					} else if (accountName.contains("qvc")
+							|| currentName.contains("qvc")
+							|| titleName.contains("qvc")) {
+						domainName = "qvc.com";
 					} else if (accountName.contains("raymond")
 							|| currentName.contains("raymond")
 							|| titleName.contains("raymond")) {
@@ -759,6 +830,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("caribbean")
 							|| titleName.contains("caribbean")) {
 						domainName = "rccl.com";
+					} else if (accountName.contains("rovi")
+							|| currentName.contains("rovi")
+							|| titleName.contains("rovi")) {
+						domainName = "rovicorp.com";
 					} else if (accountName.contains("sas")
 							|| currentName.contains("sas")
 							|| titleName.contains("sas")) {
@@ -776,6 +851,10 @@ public class ExcelEmailBuilder {
 							|| titleName.contains("st. lukes university health") 
 							|| titleName.contains("st luke's university health")) {
 						domainName = "slhn.org";
+					} else if (accountName.contains("siemens")
+							|| currentName.contains("siemens")
+							|| titleName.contains("siemens")) {
+						domainName = "siemens.com";
 					} else if (accountName.contains("sita")
 							|| currentName.contains("sita")
 							|| titleName.contains("sita")) {
@@ -808,6 +887,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("syniverse")
 							|| titleName.contains("syniverse")) {
 						domainName = "syniverse.com";
+					} else if (accountName.contains("towers watson")
+							|| currentName.contains("towers watson")
+							|| titleName.contains("towers watson")) {
+						domainName = "towerswatson.com";
 					} else if (accountName.contains("rowe")
 							|| currentName.contains("rowe")
 							|| titleName.contains("rowe")) {
@@ -833,6 +916,10 @@ public class ExcelEmailBuilder {
 							|| titleName.contains("coca-cola") 
 							|| titleName.contains("coca cola")) {
 						domainName = "na.ko.com";
+					} else if (accountName.contains("fmc")
+							|| currentName.contains("fmc")
+							|| titleName.contains("fmc")) {
+						domainName = "fmc.com";
 					} else if (accountName.contains("hershey")
 							|| currentName.contains("hershey")
 							|| titleName.contains("hershey")) {
@@ -844,6 +931,14 @@ public class ExcelEmailBuilder {
 							|| titleName.contains("home depot") 
 							|| titleName.contains("thd")) {
 						domainName = "homedepot.com";
+					} else if (accountName.contains("sei")
+							|| currentName.contains("sei")
+							|| titleName.contains("sei")) {
+						domainName = "seic.com";
+					} else if (accountName.contains("susquehanna")
+							|| currentName.contains("susquehanna")
+							|| titleName.contains("susquehanna")) {
+						domainName = "sig.com";
 					} else if (accountName.contains("vanguard")
 							|| currentName.contains("vanguard")
 							|| titleName.contains("vanguard")) {
@@ -852,6 +947,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("tmg")
 							|| titleName.contains("tmg")) {
 						domainName = "hcsc.net";
+					} else if (accountName.contains("tokio marine")
+							|| currentName.contains("tokio marine")
+							|| titleName.contains("tokio marine")) {
+						domainName = "tokiom.com";
 					} else if (accountName.contains("travelport")
 							|| currentName.contains("travelport")
 							|| titleName.contains("travelport")) {
@@ -860,6 +959,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("tsys")
 							|| titleName.contains("tsys")) {
 						domainName = "tsys.com";
+					} else if (accountName.contains("tyco")
+							|| currentName.contains("tyco")
+							|| titleName.contains("tyco")) {
+						domainName = "tycoelectronics.com";
 					} else if (accountName.contains("ultimate")
 							|| currentName.contains("ultimate")
 							|| titleName.contains("ultimate")) {
@@ -868,6 +971,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("united guaranty")
 							|| titleName.contains("united guaranty")) {
 						domainName = "ugcorp.com";
+					} else if (accountName.contains("urban out")
+							|| currentName.contains("urban out")
+							|| titleName.contains("urban out")) {
+						domainName = "urbanout.com";
 					} else if (accountName.contains("united parcel") 
 							|| accountName.contains("ups")
 							|| currentName.contains("united parcel") 
@@ -890,6 +997,10 @@ public class ExcelEmailBuilder {
 							|| titleName.contains("volkswagen")
 							|| titleName.contains("vw")) {
 						domainName = "vw.com";
+					} else if (accountName.contains("wawa")
+							|| currentName.contains("wawa")
+							|| titleName.contains("wawa")) {
+						domainName = "wawa.com";
 					} else if (accountName.contains("wake forest")
 							|| currentName.contains("wake forest")
 							|| titleName.contains("wake forest")) {
@@ -898,6 +1009,10 @@ public class ExcelEmailBuilder {
 							|| currentName.contains("wellcare")
 							|| titleName.contains("wellcare")) {
 						domainName = "wellcare.com";
+					} else if (accountName.contains("gore")
+							|| currentName.contains("gore")
+							|| titleName.contains("gore")) {
+						domainName = "wlgore.com";
 					} else {
 						domainName = "NONE FOUND";
 						domainsNotFound++;
@@ -923,8 +1038,10 @@ public class ExcelEmailBuilder {
 						case "bbandt.com":
 						case "carecorenational.com":
 						case "carnival.com":
+						case "chubb.com":
 						case "comscore.com":
 						case "darden.com":
+						case "ebay.com":
 						case "footballfanatics.com":
 						case "hanloninvest.com":
 						case "healthesystems.com":
@@ -944,9 +1061,12 @@ public class ExcelEmailBuilder {
 						case "ups.com":
 						case "verisign.com":
 						case "masonite.com":
+						case "seic.com":
 						case "dollartree.com":
 						case "geico.com":
 						case "nascar.com":
+						case "urbanout.com":
+						case "wlgore.com":
 							nonEmptyRows++;
 							email = firstName.substring(0, 1) + lastName + "@" + domainName; 
 							break;
@@ -954,6 +1074,7 @@ public class ExcelEmailBuilder {
 						// Cases with FirstName.MiddleInitial(if available).LastName@domainName
 						case "delta.com":
 						case "lowes.com":
+						case "gsk.com":
 							nonEmptyRows++;
 							if (middleName != null) {
 								email = firstName + "." + middleName.substring(0, 1) + lastName + "@" + domainName;
@@ -983,7 +1104,9 @@ public class ExcelEmailBuilder {
 						case "dominionenterprises.com":
 						case "duke-energy.com":
 						case "usa.dupont.com":
+						case "ellucian.com":
 						case "equifax.com":
+						case "fmc.com":
 						case "fnf.com":
 						case "fiserv.com":
 						case "fpl.com":
@@ -995,6 +1118,7 @@ public class ExcelEmailBuilder {
 						case "harris.com":
 						case "hilton.com":
 						case "iassoftware.com":
+						case "ibx.com":
 						case "ihg.com":
 						case "jmfamily.com":
 						case "lfg.com":
@@ -1009,22 +1133,36 @@ public class ExcelEmailBuilder {
 						case "ngc.com":
 						case "officedepot.com":
 						case "publix.com":
+						case "qvc.com":
 						case "raymondjames.com":
+						case "rovicorp.com":
 						case "sas.com":
+						case "siemens.com":
+						case "sig.com":
 						case "sita.aero":
 						case "sungardas.com":
 						case "sykes.com":
 						case "synchronoss.com":
 						case "syniverse.com":
+						case "towerswatson.com":
 						case "transcore.com":
 						case "travelport.com":
+						case "tokiom.com":
+						case "tycoelectronics.com":
 						case "ugcorp.com":
 						case "vertexinc.com":
 						case "vw.com":
+						case "wawa.com":
 						case "wellcare.com":
 							nonEmptyRows++;
 							email = firstName + "." + lastName + "@" + domainName; 
 							break;
+							
+						// Cases with LastName.FirstName@domainName
+						case "endo.com":
+							nonEmptyRows++;
+							email = lastName + "." + firstName + "@" + domainName; 
+							break;							
 														
 						// Cases with LastName + FirstInitial@domainName
 						case "autonation.com":
@@ -1058,6 +1196,12 @@ public class ExcelEmailBuilder {
 							email = firstName + "_" + lastName + "@" + domainName;
 							break;
 							
+						// Cases with LastName-FirstName@domain.com
+						case "aramark.com":
+							nonEmptyRows++;
+							email = lastName + "-" + firstName + "@" + domainName;
+							break;
+							
 						// Cases with first 6 letters of LastName + FirstInitial@domainName
 						case "labcorp.com":
 						case "slhn.org":
@@ -1066,6 +1210,24 @@ public class ExcelEmailBuilder {
 								email = firstName + "@" + domainName;
 							} else if (lastName.length() > 6) {
 								email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
+							} else {
+								email = lastName + firstName.substring(0, 1) + "@" + domainName;
+							}
+							break;
+							
+						// Cases with first 6 letters of LastName + FirstInitial + MiddleInitial@domainName
+						case "airproducts.com":
+							nonEmptyRows++;
+							if (lastName == null) {
+								email = firstName + "@" + domainName;
+							} else if (lastName.length() > 6 && middleName != null) {
+								email = lastName.substring(0, 6) + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
+							} else if (lastName.length() > 6 && middleName == null) {
+								email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
+							} else if (lastName.length() <= 6 && middleName != null) {
+								email = lastName + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
+							} else if (lastName.length() <= 6 && middleName == null) {
+								email = lastName + firstName.substring(0, 1) + "@" + domainName;
 							} else {
 								email = lastName + firstName.substring(0, 1) + "@" + domainName;
 							}

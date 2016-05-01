@@ -249,10 +249,14 @@ public class ExcelEmailBuilder {
 					if (linkedinCell.toString().toLowerCase().contains("linkedin")) {
 						linkedinMembers++;
 						System.out.println("NON-CONNECTED 'LinkedIn Member' ENTRY REMOVED: " + linkedinCell.toString());
-						// Clear row with no name or connections
-						sheet.removeRow(row);
-						// Remove cleared empty row
-						sheet.shiftRows(r + 1, sheet.getLastRowNum(), -1);
+						if (r != sheet.getLastRowNum()) {
+							// Clear row with no name or connections
+							sheet.removeRow(row);
+							// Remove cleared empty row
+							sheet.shiftRows(r + 1, sheet.getLastRowNum(), -1);
+						} else {
+							sheet.removeRow(row);
+						}
 						// Reset row counter
 						r--;
 						continue;
@@ -276,8 +280,10 @@ public class ExcelEmailBuilder {
 							System.out.println("DUPLICATE ENTRY REMOVED: " + compareCell.toString());
 							// Clear duplicate row
 							sheet.removeRow(compareRow);
-							// Remove cleared empty row
-							sheet.shiftRows(c + 1, sheet.getLastRowNum(), -1);
+							if (sheet.getRow(c + 1) != null) {
+								// Remove cleared empty row
+								sheet.shiftRows(c + 1, sheet.getLastRowNum(), -1);
+							}
 							// Reset row counter
 							r--;
 						} 

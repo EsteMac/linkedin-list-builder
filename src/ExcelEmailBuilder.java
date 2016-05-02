@@ -227,6 +227,9 @@ public class ExcelEmailBuilder {
 						titleName = "";
 					}
 					
+					// HashMap to store the email structure type per named account
+				    Map<String, Integer> emailStructureMap = new HashMap<String, Integer>();
+					
 					// Search across rows in the input data sheet to find a match
 					search:
 						for (int i = 1; i <= accountsSheet.getLastRowNum(); i++) {
@@ -245,12 +248,20 @@ public class ExcelEmailBuilder {
 											|| (currentName.contains(leftAccount) && currentName.contains(rightAccount))
 											|| (titleName.contains(leftAccount) && titleName.contains(rightAccount))) {
 										domainName = accountRow.getCell(0).toString();
+										// This cell associates the correct email format structure with each domain
+										// which is stored in the emailStructureMap 
+										Cell emailTypeCell = accountRow.getCell(1);
+										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										break search;
 									}
 								} else if (accountName.contains(accountNameString)
 											|| currentName.contains(accountNameString)
 											|| titleName.contains(accountNameString)) {
 										domainName = accountRow.getCell(0).toString();
+										// This cell associates the correct email format structure with each domain
+										// which is stored in the emailStructureMap 
+										Cell emailTypeCell = accountRow.getCell(1);
+										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										break search;
 								} else {
 									continue;
@@ -274,216 +285,98 @@ public class ExcelEmailBuilder {
 					emailCell = row.createCell(nameColumnIndex + 12);
 					emailCell.setCellStyle(styleBlueWhite);
 					String email = null;
-					switch (domainName)
-					{
-						// Cases with FirstInitial + LastName@domainName
-						case "aarp.org":
-						case "aflac.com":
-						case "amerisourcebergen.com":
-						case "audiusa.com":
-						case "avidxchange.com":
-						case "bbandt.com":
-						case "carecorenational.com":
-						case "carnival.com":
-						case "chubb.com":
-						case "comscore.com":
-						case "darden.com":
-						case "ebay.com":
-						case "footballfanatics.com":
-						case "hanloninvest.com":
-						case "healthesystems.com":
-						case "imshealth.com":
-						case "inovalon.com":
-						case "manh.com":
-						case "markelcorp.com":
-						case "microstrategy.com":
-						case "underarmour.com":
-						case "rccl.com":
-						case "subaru.com":
-						case "na.ko.com":
-						case "hersheys.com":
-						case "sbgnet.com":
-						case "southernco.com":
-						case "tsys.com":
-						case "ups.com":
-						case "verisign.com":
-						case "masonite.com":
-						case "seic.com":
-						case "dollartree.com":
-						case "geico.com":
-						case "nascar.com":
-						case "urbanout.com":
-						case "wlgore.com":
-							nonEmptyRows++;
-							email = firstName.substring(0, 1) + lastName + "@" + domainName; 
-							break;
+					
+					// Build email addresses based on email structure types stored in emailStructuremap		
+					if (!domainName.contains("NONE FOUND")) {
+						switch (emailStructureMap.get(domainName))
+						{
+							// Cases with FirstInitial + LastName@domainName
+							case 1:
+								nonEmptyRows++;
+								email = firstName.substring(0, 1) + lastName + "@" + domainName; 
+								break;
+								
+							// Cases with FirstName.MiddleInitial(if available).LastName@domainName
+							case 2:
+								nonEmptyRows++;
+								if (middleName != null) {
+									email = firstName + "." + middleName.substring(0, 1) + lastName + "@" + domainName;
+								} else {
+									email = firstName + "." + lastName + "@" + domainName;
+								}
+								break;
 							
-						// Cases with FirstName.MiddleInitial(if available).LastName@domainName
-						case "delta.com":
-						case "lowes.com":
-						case "gsk.com":
-							nonEmptyRows++;
-							if (middleName != null) {
-								email = firstName + "." + middleName.substring(0, 1) + lastName + "@" + domainName;
-							} else {
-								email = firstName + "." + lastName + "@" + domainName;
-							}
-							break;
-						
-						// Cases with FirstName.LastName@domainName
-						case "advance-auto.com":
-						case "ahss.org":
-						case "altisource.com":
-						case "astrazeneca.com":
-						case "baycare.org":
-						case "bdpinternational.com":
-						case "benefitfocus.com":
-						case "blackbaud.com":
-						case "blackboard.com":
-						case "bcbsfl.com":
-						case "bcbsnc.com":
-						case "carefirst.com":
-						case "catalinamarketing.com":
-						case "chicos.com":
-						case "citrix.com":
-						case "autotrader.com":
-						case "danaher.com":
-						case "dominionenterprises.com":
-						case "duke-energy.com":
-						case "usa.dupont.com":
-						case "ellucian.com":
-						case "equifax.com":
-						case "fmc.com":
-						case "fnf.com":
-						case "fiserv.com":
-						case "fpl.com":
-						case "freedommortgage.com":
-						case "fticonsulting.com":
-						case "gdit.com":
-						case "ge.com":
-						case "genworth.com":
-						case "harris.com":
-						case "hilton.com":
-						case "iassoftware.com":
-						case "ibx.com":
-						case "ihg.com":
-						case "jmfamily.com":
-						case "lfg.com":
-						case "macys.com":
-						case "marriott.com":
-						case "effem.com":
-						case "mckesson.com":
-						case "moffitt.org":
-						case "ncr.com":
-						case "neustar.biz":
-						case "nielsen.com":
-						case "ngc.com":
-						case "officedepot.com":
-						case "publix.com":
-						case "qvc.com":
-						case "raymondjames.com":
-						case "rovicorp.com":
-						case "sas.com":
-						case "siemens.com":
-						case "sig.com":
-						case "sita.aero":
-						case "sungardas.com":
-						case "sykes.com":
-						case "synchronoss.com":
-						case "syniverse.com":
-						case "towerswatson.com":
-						case "transcore.com":
-						case "travelport.com":
-						case "tokiom.com":
-						case "tycoelectronics.com":
-						case "ugcorp.com":
-						case "vertexinc.com":
-						case "vw.com":
-						case "wawa.com":
-						case "wellcare.com":
-							nonEmptyRows++;
-							email = firstName + "." + lastName + "@" + domainName; 
-							break;
-							
-						// Cases with LastName.FirstName@domainName
-						case "endo.com":
-							nonEmptyRows++;
-							email = lastName + "." + firstName + "@" + domainName; 
-							break;							
-														
-						// Cases with LastName + FirstInitial@domainName
-						case "autonation.com":
-						case "email.chop.edu":
-						case "wfu.edu":
-							nonEmptyRows++;
-							email = lastName + firstName.substring(0, 1) + "@" + domainName;
-							break;
-							
-						// Cases with LastName + FirstName@domainName
-						case "praintl.com":
-							nonEmptyRows++;
-							email = lastName + firstName + "@" + domainName;
-							break;
-							
-						// Cases with FirstName_LastName@domainName
-						case "carmax.com":
-						case "csx.com":
-						case "dell.com":
-						case "fanniemae.com":
-						case "freddiemac.com":
-						case "merck.com":
-						case "mohawkind.com":
-						case "navyfederal.org":
-						case "troweprice.com":
-						case "homedepot.com":
-						case "ultimatesoftware.com":
-						case "vanguard.com":
-						case "hcsc.net":
-							nonEmptyRows++;
-							email = firstName + "_" + lastName + "@" + domainName;
-							break;
-							
-						// Cases with LastName-FirstName@domain.com
-						case "aramark.com":
-							nonEmptyRows++;
-							email = lastName + "-" + firstName + "@" + domainName;
-							break;
-							
-						// Cases with first 6 letters of LastName + FirstInitial@domainName
-						case "labcorp.com":
-						case "slhn.org":
-							nonEmptyRows++;
-							if (lastName == null) {
-								email = firstName + "@" + domainName;
-							} else if (lastName.length() > 6) {
-								email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
-							} else {
+							// Cases with FirstName.LastName@domainName
+							case 3:
+								nonEmptyRows++;
+								email = firstName + "." + lastName + "@" + domainName; 
+								break;
+								
+							// Cases with LastName.FirstName@domainName
+							case 4:
+								nonEmptyRows++;
+								email = lastName + "." + firstName + "@" + domainName; 
+								break;							
+															
+							// Cases with LastName + FirstInitial@domainName
+							case 5:
+								nonEmptyRows++;
 								email = lastName + firstName.substring(0, 1) + "@" + domainName;
-							}
-							break;
+								break;
+								
+							// Cases with LastName + FirstName@domainName
+							case 6:
+								nonEmptyRows++;
+								email = lastName + firstName + "@" + domainName;
+								break;
+								
+							// Cases with FirstName_LastName@domainName
+							case 7:
+								nonEmptyRows++;
+								email = firstName + "_" + lastName + "@" + domainName;
+								break;
+								
+							// Cases with LastName-FirstName@domain.com
+							case 8:
+								nonEmptyRows++;
+								email = lastName + "-" + firstName + "@" + domainName;
+								break;
+								
+							// Cases with first 6 letters of LastName + FirstInitial@domainName
+							case 9:
+								nonEmptyRows++;
+								if (lastName == null) {
+									email = firstName + "@" + domainName;
+								} else if (lastName.length() > 6) {
+									email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
+								} else {
+									email = lastName + firstName.substring(0, 1) + "@" + domainName;
+								}
+								break;
+								
+							// Cases with first 6 letters of LastName + FirstInitial + MiddleInitial@domainName
+							case 10:
+								nonEmptyRows++;
+								if (lastName == null) {
+									email = firstName + "@" + domainName;
+								} else if (lastName.length() > 6 && middleName != null) {
+									email = lastName.substring(0, 6) + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
+								} else if (lastName.length() > 6 && middleName == null) {
+									email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
+								} else if (lastName.length() <= 6 && middleName != null) {
+									email = lastName + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
+								} else if (lastName.length() <= 6 && middleName == null) {
+									email = lastName + firstName.substring(0, 1) + "@" + domainName;
+								} else {
+									email = lastName + firstName.substring(0, 1) + "@" + domainName;
+								}
+								break;
 							
-						// Cases with first 6 letters of LastName + FirstInitial + MiddleInitial@domainName
-						case "airproducts.com":
-							nonEmptyRows++;
-							if (lastName == null) {
-								email = firstName + "@" + domainName;
-							} else if (lastName.length() > 6 && middleName != null) {
-								email = lastName.substring(0, 6) + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
-							} else if (lastName.length() > 6 && middleName == null) {
-								email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
-							} else if (lastName.length() <= 6 && middleName != null) {
-								email = lastName + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
-							} else if (lastName.length() <= 6 && middleName == null) {
-								email = lastName + firstName.substring(0, 1) + "@" + domainName;
-							} else {
-								email = lastName + firstName.substring(0, 1) + "@" + domainName;
-							}
-							break;
-						
-						// Default case
-						default:
-							System.out.println("UNABLE TO ID DOMAIN FOR: 'company': " + accountName + 
-									"  'current': " + currentName + "   'title': " + titleName); 
+							// Default case
+							default:
+								System.out.println("UNABLE TO ID DOMAIN FOR: 'company': " + accountName + 
+										"  'current': " + currentName + "   'title': " + titleName); 
+						}
 					}
 					emailCell.setCellValue(email);
 				}

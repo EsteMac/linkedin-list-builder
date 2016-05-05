@@ -236,9 +236,16 @@ public class ExcelEmailBuilder {
 							Row accountRow = accountsSheet.getRow(i);
 							domainName = null;
 							// for each row, iterate across account name columns to find a match
-							for(int accountColumn = 2; accountColumn < accountRow.getLastCellNum(); accountColumn++) {
-								Cell accountNameCell = accountRow.getCell(accountColumn);
+							for(int c = 2; c < accountRow.getLastCellNum(); c++) {
+								Cell accountNameCell = accountRow.getCell(c);
 								String accountNameString = accountNameCell.toString().toLowerCase();
+								if (accountNameString.isEmpty()) {
+									// No need to continue to check empty cells if there 
+									// are no empty cells between Account Name cells
+									// Move on and check the next row of account names
+									// Change to "continue;" if users are leaving empty cells between account names
+									break;
+								}
 								// check for boolean operator AND in the input sheet account name cells
 								if (accountNameString.contains(" and ")) {
 									String[] accountBooleanSplit = accountNameString.split(" and ", 2);
@@ -252,6 +259,7 @@ public class ExcelEmailBuilder {
 										// which is stored in the emailStructureMap 
 										Cell emailTypeCell = accountRow.getCell(1);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
+										// Success! Exit this loop for this once contact check
 										break search;
 									}
 								} else if (accountName.contains(accountNameString)
@@ -262,6 +270,7 @@ public class ExcelEmailBuilder {
 										// which is stored in the emailStructureMap 
 										Cell emailTypeCell = accountRow.getCell(1);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
+										// Success! Exit this loop for this once contact check
 										break search;
 								} else {
 									continue;

@@ -35,6 +35,7 @@ public class ExcelEmailBuilder {
 				Sheet dataMinerSheet = workbook.getSheetAt(0);
 				Sheet accountsSheet = workbook.getSheetAt(1);
 				Sheet summarySheet = workbook.createSheet("Summary");
+				Sheet marketoSheet = workbook.createSheet("Marketo");
 				
 				// Strings used to build email addresses
 				String fullName;
@@ -239,13 +240,11 @@ public class ExcelEmailBuilder {
 							domainName = null;
 							// for each row, iterate across account name columns to find a match
 							for(int c = 2; c < accountRow.getLastCellNum(); c++) {
-								System.out.println("row = " + i + " : col = " + c);
 								Cell accountNameCell = accountRow.getCell(c);
 								if (cellIsEmpty(accountNameCell)) {
 									// No need to continue to check empty cells if there 
 									// are no empty cells between Account Name cells
 									// Move on and check the next row of account names
-									System.out.println("That shit was empty!! Go to the next row");
 									break;
 								}
 								String accountNameString = accountNameCell.toString().toLowerCase();
@@ -258,7 +257,6 @@ public class ExcelEmailBuilder {
 										Cell emailTypeCell = accountRow.getCell(1);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										// Success! Exit this loop for this once contact check
-										System.out.println("Matched one of the split cells!!");
 										break search;
 									};
 								} else if (cellCheck(accountNameString, accountName, currentName, titleName) == true) {
@@ -268,12 +266,8 @@ public class ExcelEmailBuilder {
 										Cell emailTypeCell = accountRow.getCell(1);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										// Success! Exit this loop for this once contact check
-										System.out.println("Matched one of the regular cells!!");
 										break search;
-								} else {
-									System.out.println("No match :-( check the next column (if not empty)");
-								}
-								continue;
+								} 
 							}
 						}
 					// Check for matches unable to make
@@ -455,6 +449,34 @@ public class ExcelEmailBuilder {
 				// Resize columns on summary sheet to fit data
 				summarySheet.autoSizeColumn(0);
 				summarySheet.autoSizeColumn(1);
+				
+				// Create the title row for the marketo sheet
+				Row marketoTitleRow = marketoSheet.createRow(0);
+				marketoTitleRow.createCell(0).setCellValue("First Name");
+				marketoTitleRow.createCell(1).setCellValue("Last Name");
+				marketoTitleRow.createCell(2).setCellValue("Company Name");
+				marketoTitleRow.createCell(3).setCellValue("Email Address");
+				marketoTitleRow.createCell(4).setCellValue("Phone Number");
+				marketoTitleRow.createCell(5).setCellValue("Job Title");
+				marketoTitleRow.createCell(6).setCellValue("City");
+				marketoTitleRow.createCell(7).setCellValue("State");
+				marketoTitleRow.createCell(8).setCellValue("Postal Code");
+				marketoTitleRow.createCell(9).setCellValue("Country");
+				marketoTitleRow.createCell(10).setCellValue("Original Lead Source Description");
+				marketoTitleRow.createCell(11).setCellValue("Original Lead Source");
+				marketoTitleRow.createCell(12).setCellValue("Most Recent Lead Source");
+				marketoTitleRow.createCell(13).setCellValue("Most Recent Lead Source Description");
+				marketoTitleRow.createCell(14).setCellValue("Lead Action");
+				marketoTitleRow.createCell(15).setCellValue("Agile");
+				marketoTitleRow.createCell(16).setCellValue("Product: Data");
+				marketoTitleRow.createCell(17).setCellValue("PaaS");
+				marketoTitleRow.createCell(18).setCellValue("Labs");
+				marketoTitleRow.createCell(19).setCellValue("PWS");
+				
+				// Resize columns in Marketo sheet to fit data
+				for (int col = 0; col < marketoTitleRow.getLastCellNum(); col++) {
+					marketoSheet.autoSizeColumn(col);
+				}
 	        
 				// Create new file from input file data
 		        try {

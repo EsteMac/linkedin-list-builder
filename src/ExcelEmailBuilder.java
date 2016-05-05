@@ -229,52 +229,51 @@ public class ExcelEmailBuilder {
 					
 					// HashMap to store the email structure type per named account
 				    Map<String, Integer> emailStructureMap = new HashMap<String, Integer>();
+				    
+
 					
 					// Search across rows in the input data sheet to find a match
 					search:
-						for (int i = 1; i <= accountsSheet.getLastRowNum(); i++) {
+						for (int i = 6; i <= accountsSheet.getLastRowNum(); i++) {
 							Row accountRow = accountsSheet.getRow(i);
 							domainName = null;
 							// for each row, iterate across account name columns to find a match
 							for(int c = 2; c < accountRow.getLastCellNum(); c++) {
+								System.out.println("row = " + i + " : col = " + c);
 								Cell accountNameCell = accountRow.getCell(c);
-								String accountNameString = accountNameCell.toString().toLowerCase();
-								if (accountNameString.isEmpty()) {
+								if (cellIsEmpty(accountNameCell)) {
 									// No need to continue to check empty cells if there 
 									// are no empty cells between Account Name cells
 									// Move on and check the next row of account names
-									// Change to "continue;" if users are leaving empty cells between account names
+									System.out.println("That shit was empty!! Go to the next row");
 									break;
 								}
+								String accountNameString = accountNameCell.toString().toLowerCase();
 								// check for boolean operator AND in the input sheet account name cells
 								if (accountNameString.contains(" and ")) {
-									String[] accountBooleanSplit = accountNameString.split(" and ", 2);
-									String leftAccount = accountBooleanSplit[0];
-									String rightAccount = accountBooleanSplit[1];
-									if ((accountName.contains(leftAccount) && accountName.contains(rightAccount))
-											|| (currentName.contains(leftAccount) && currentName.contains(rightAccount))
-											|| (titleName.contains(leftAccount) && titleName.contains(rightAccount))) {
+									if (splitCellCheck(accountNameString, accountName, currentName, titleName) == true) {
 										domainName = accountRow.getCell(0).toString();
 										// This cell associates the correct email format structure with each domain
 										// which is stored in the emailStructureMap 
 										Cell emailTypeCell = accountRow.getCell(1);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										// Success! Exit this loop for this once contact check
+										System.out.println("Matched one of the split cells!!");
 										break search;
-									}
-								} else if (accountName.contains(accountNameString)
-											|| currentName.contains(accountNameString)
-											|| titleName.contains(accountNameString)) {
+									};
+								} else if (cellCheck(accountNameString, accountName, currentName, titleName) == true) {
 										domainName = accountRow.getCell(0).toString();
 										// This cell associates the correct email format structure with each domain
 										// which is stored in the emailStructureMap 
 										Cell emailTypeCell = accountRow.getCell(1);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										// Success! Exit this loop for this once contact check
+										System.out.println("Matched one of the regular cells!!");
 										break search;
 								} else {
-									continue;
+									System.out.println("No match :-( check the next column (if not empty)");
 								}
+								continue;
 							}
 						}
 					// Check for matches unable to make
@@ -494,5 +493,46 @@ public class ExcelEmailBuilder {
 	        .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
 	    return result;
 	}
+	
+    // Helper method to check if a cell is empty
+    private static boolean cellIsEmpty(Cell c) {
+    	boolean isEmpty = false;
+    	if (c == null || c.toString().isEmpty()) {
+    		isEmpty = true;
+    	}
+    	return isEmpty;
+    }
+    
+    // Helper method to check if accountName or currentName or titleName 
+    // match up with any of the user provided account data
+    private static boolean cellCheck(String userAccount, 
+    		String accountName, String currentName, String titleName) {
+    	boolean cellCheckFound = false;
+		if (accountName.contains(userAccount) || currentName.contains(userAccount)
+				|| currentName.contains(userAccount) || titleName.contains(userAccount)) {
+			cellCheckFound = true;
+		}
+    	return cellCheckFound;
+    }
+    
+    // Helper method to split " AND " separated account names and check if 
+    // accountName or currentName or titleName match up with any of the user provided account data
+    private static boolean splitCellCheck(String userAccount, 
+    		String accountName, String currentName, String titleName) {
+    	boolean splitCheckFound = false;
+    	if (!userAccount.contains(" and ")) {
+    		System.out.println("This string does not contain 'and' separator!");
+    	} else {
+    		String[] accountBooleanSplit = userAccount.split(" and ", 2);
+    		String leftAccount = accountBooleanSplit[0];
+    		String rightAccount = accountBooleanSplit[1];
+    		if ((accountName.contains(leftAccount) && accountName.contains(rightAccount))
+    				|| (currentName.contains(leftAccount) && currentName.contains(rightAccount))
+    				|| (titleName.contains(leftAccount) && titleName.contains(rightAccount))) {
+    			splitCheckFound = true;
+    		}
+    	}
+    	return splitCheckFound;
+    }
 	
 }

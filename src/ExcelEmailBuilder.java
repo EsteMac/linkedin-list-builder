@@ -104,6 +104,9 @@ public class ExcelEmailBuilder {
 				// where the name shows up as "LinkedIn Member"
 				int linkedinMembers = 0;
 				
+				// Keeps track of # of rows where the last name is missing
+				int nameInclomplete = 0;
+				
 				// Keeps track of # of duplicates
 				int duplicateContacts = 0;
 				
@@ -231,8 +234,6 @@ public class ExcelEmailBuilder {
 					// HashMap to store the email structure type per named account
 				    Map<String, Integer> emailStructureMap = new HashMap<String, Integer>();
 				    
-
-					
 					// Search across rows in the input data sheet to find a match
 					search:
 						for (int i = 6; i <= accountsSheet.getLastRowNum(); i++) {
@@ -279,7 +280,8 @@ public class ExcelEmailBuilder {
 					domainCell.setCellValue(domainName);
 					
 					// Update the HashMap with number of domain names identified
-					if (!domainName.contains("NONE FOUND")) {
+					if (!domainName.contains("NONE FOUND") && !(lastName == null) 
+							&& !(lastName.length() == 1) && !(firstName.length() == 1)) {
 						map.put(domainName, map.get(domainName) + 1);
 					}
 					
@@ -381,6 +383,23 @@ public class ExcelEmailBuilder {
 						}
 					}
 					emailCell.setCellValue(email);
+					
+					// Remove rows where there is no last name
+				    System.out.println("Last Name : " + lastName);
+					if (lastName == null || lastName.length() == 1 || firstName.length() == 1) {
+						nameInclomplete++;
+						System.out.println("NULL LAST NAME ENTRY REMOVED");
+						if (r != dataMinerSheet.getLastRowNum()) {
+							// Clear row with no name or connections
+							dataMinerSheet.removeRow(row);
+							// Remove cleared empty row
+							dataMinerSheet.shiftRows(r + 1, dataMinerSheet.getLastRowNum(), -1);
+						} else {
+							dataMinerSheet.removeRow(row);
+						}
+						// Reset row counter
+						r--;
+					}
 				}
 				
 				// Format success percentage
@@ -395,13 +414,13 @@ public class ExcelEmailBuilder {
 						- linkedinMembers - duplicateContacts;
 				System.out.println();
 				System.out.println("Successfully matched domain/email for " 
-						+ df.format(100 - (((double) domainsNotFound 
-								/ (goodContacts + domainsNotFound)) * 100)) 
+						+ df.format(100 - (((double) (domainsNotFound + linkedinMembers + nameInclomplete)
+								/ (goodContacts + domainsNotFound + linkedinMembers + nameInclomplete)) * 100)) 
 								+ "% of contacts (" + goodContacts + " matched with "
-								+ domainsNotFound + " not matched)");
+								+ (domainsNotFound + linkedinMembers + nameInclomplete) + " not matched)");
 				System.out.println("Removed " + emptyRows + " empty rows, " 
-						+ duplicateContacts + " duplicate entries, and " 
-						+ linkedinMembers + " 'LinkedIn Members'");
+						+ duplicateContacts + " duplicate entries, " 
+						+ linkedinMembers + " 'LinkedIn Members', and " + nameInclomplete + " entries with incomplete names");
 				
 				// Log total number of results per account (from largest to smallest)
 				System.out.print("Top accounts for this search: ");

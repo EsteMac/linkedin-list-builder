@@ -385,10 +385,9 @@ public class ExcelEmailBuilder {
 					emailCell.setCellValue(email);
 					
 					// Remove rows where there is no last name
-				    System.out.println("Last Name : " + lastName);
 					if (lastName == null || lastName.length() == 1 || firstName.length() == 1) {
 						nameInclomplete++;
-						System.out.println("NULL LAST NAME ENTRY REMOVED");
+						System.out.println("ENTRY WITH INCOMPLETE FIRST OR LAST NAME REMOVED");
 						if (r != dataMinerSheet.getLastRowNum()) {
 							// Clear row with no name or connections
 							dataMinerSheet.removeRow(row);

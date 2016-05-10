@@ -103,6 +103,9 @@ public class ExcelEmailBuilder {
 				emailTitleCell.setCellValue("Email");
 				emailTitleCell.setCellStyle(styleBlueWhite);
 				
+				// Keeps track of contacts with good data that were also successfully matched with an email / domain
+				int goodContacts = 0;
+				
 				// Keeps track of # of empty rows
 				int emptyRows = 0;
 				
@@ -135,13 +138,13 @@ public class ExcelEmailBuilder {
 				}
 				
 				// Remove "LinkedIn Member" rows
+				System.out.println("REMOVING 'LinkedIn Member' ENTRIES...");
 				for (int r = 1; r <= dataMinerSheet.getLastRowNum(); r++) {
 					Row row = dataMinerSheet.getRow(r);
 					// Check for entries with names listed as "LinkedIn" and remove them
 					Cell linkedinCell = row.getCell(nameColumnIndex);
 					if (linkedinCell.toString().toLowerCase().contains("linkedin")) {
 						linkedinMembers++;
-						System.out.println("NON-CONNECTED 'LinkedIn Member' ENTRY REMOVED: " + linkedinCell.toString());
 						if (r != dataMinerSheet.getLastRowNum()) {
 							// Clear row with no name or connections
 							dataMinerSheet.removeRow(row);
@@ -157,6 +160,7 @@ public class ExcelEmailBuilder {
 				}
 				
 				// Remove duplicate rows
+				System.out.println("REMOVING DUPLICATE ENTRIES...");
 				for (int r = 1; r <= dataMinerSheet.getLastRowNum(); r++) {
 					Row row = dataMinerSheet.getRow(r);
 					// Check for duplicate entries and remove them
@@ -170,7 +174,7 @@ public class ExcelEmailBuilder {
 						if ((checkCell.toString() == compareCell.toString())
 								&& (currentAdjacentCell.toString() == compareAdjacentCell.toString())) {
 							duplicateContacts++;
-							System.out.println("DUPLICATE ENTRY REMOVED: " + compareCell.toString());
+							System.out.println("REMOVED DUPLICATE ENTRY: " + compareCell.toString());
 							// Clear duplicate row
 							dataMinerSheet.removeRow(compareRow);
 							if (dataMinerSheet.getRow(c + 1) != null) {
@@ -396,10 +400,12 @@ public class ExcelEmailBuilder {
 					}
 					emailCell.setCellValue(email);
 					
-					// Remove rows where there is no last name
+					// Remove rows with incomplete names
 					if (lastName == null || lastName.length() == 1 || firstName.length() == 1) {
 						nameInclomplete++;
-						System.out.println("ENTRY WITH INCOMPLETE FIRST OR LAST NAME REMOVED");
+						if (r == 1) {
+							System.out.println("REMOVING ENTRIES WITH INCOMPLETE NAMES...");
+						}
 						if (r != dataMinerSheet.getLastRowNum()) {
 							// Clear row with no name or connections
 							dataMinerSheet.removeRow(row);
@@ -410,38 +416,6 @@ public class ExcelEmailBuilder {
 						}
 						// Reset row counter
 						r--;
-					}
-				}
-				
-
-				// Format success percentage
-				DecimalFormat df = new DecimalFormat("#.##");
-				df.setRoundingMode(RoundingMode.HALF_UP);
-				
-				// Sort map of count of successful domain matches (from largest to smallest)
-				Map<String, Integer> descendingMap = sortByValue(map);
-				
-				// Log stats to the console
-				int goodContacts = nonEmptyRows 
-						- linkedinMembers - duplicateContacts;
-				System.out.println();
-				System.out.println("Successfully matched domain/email for " 
-						+ df.format(100 - (((double) (domainsNotFound + linkedinMembers + nameInclomplete)
-								/ (goodContacts + domainsNotFound + linkedinMembers + nameInclomplete)) * 100)) 
-								+ "% of contacts (" + goodContacts + " matched with "
-								+ (domainsNotFound + linkedinMembers + nameInclomplete) + " not matched)");
-				System.out.println("Removed " + emptyRows + " empty rows, " 
-						+ duplicateContacts + " duplicate entries, " 
-						+ linkedinMembers + " 'LinkedIn Members', and " + nameInclomplete + " entries with incomplete names");
-				
-				// Log total number of results per account (from largest to smallest)
-				System.out.print("Top accounts for this search: ");
-				for (String name : descendingMap.keySet()) {
-					String key = name;
-					int valueInt = descendingMap.get(name);
-					String valueString = descendingMap.get(name).toString();
-					if (valueInt != 0 && !key.contains("NONE FOUND")) {
-						System.out.print(key + ": " + valueString + " --> ");
 					}
 				}
 				
@@ -456,6 +430,9 @@ public class ExcelEmailBuilder {
 				Row summaryTitleRow = summarySheet.createRow(0);
 				summaryTitleRow.createCell(0).setCellValue("Domain");
 				summaryTitleRow.createCell(1).setCellValue("Total Found");
+				
+				// Sort map of count of successful domain matches (from largest to smallest)
+				Map<String, Integer> descendingMap = sortByValue(map);
 				
 				// In summary sheet enter total number of results per account (from largest to smallest)
 				Iterator<Entry<String, Integer>> it = descendingMap.entrySet().iterator();
@@ -505,6 +482,8 @@ public class ExcelEmailBuilder {
 				marketoTitleRow.createCell(19).setCellValue("PWS");
 				
 				// Populate Marketo sheet
+				System.out.println();
+				System.out.println("POPULATING MARKETO SHEET...");
 				int rowDelta = 0;
 				for (int r = 1; r <= dataMinerSheet.getLastRowNum(); r++) {
 					Row dataMinerRow = dataMinerSheet.getRow(r);
@@ -560,12 +539,39 @@ public class ExcelEmailBuilder {
 						marketoFirstName.setCellValue(dataMinerFirstName);
 						marketoLastName.setCellValue(dataMinerLastName);
 						marketoEmail.setCellValue(dataMinerEmail);
+						goodContacts++;
 					}
 				}
 				
 				// Resize columns in Marketo sheet to fit data
 				for (int col = 0; col < marketoTitleRow.getLastCellNum(); col++) {
 					marketoSheet.autoSizeColumn(col);
+				}
+				
+				// Format success percentage
+				DecimalFormat df = new DecimalFormat("#.##");
+				df.setRoundingMode(RoundingMode.HALF_UP);
+				
+				// Log stats to the console
+				System.out.println();
+				System.out.println("Successfully matched domain/email for " 
+						+ df.format(100 - (((double) (domainsNotFound + linkedinMembers + nameInclomplete)
+								/ (goodContacts + domainsNotFound + linkedinMembers + nameInclomplete)) * 100)) 
+								+ "% of contacts (" + goodContacts + " matched with "
+								+ (domainsNotFound + linkedinMembers + nameInclomplete) + " not matched)");
+				System.out.println("Removed " + emptyRows + " empty rows, " 
+						+ duplicateContacts + " duplicate entries, " 
+						+ linkedinMembers + " 'LinkedIn Members', and " + nameInclomplete + " entries with incomplete names");
+				
+				// Log total number of results per account (from largest to smallest)
+				System.out.print("Top accounts for this search: ");
+				for (String name : descendingMap.keySet()) {
+					String key = name;
+					int valueInt = descendingMap.get(name);
+					String valueString = descendingMap.get(name).toString();
+					if (valueInt != 0 && !key.contains("NONE FOUND")) {
+						System.out.print(key + ": " + valueString + " --> ");
+					}
 				}
 	        
 				// Create new file from input file data

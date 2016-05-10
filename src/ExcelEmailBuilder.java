@@ -64,11 +64,20 @@ public class ExcelEmailBuilder {
 				Cell emailCell;
 				
 				// HashMap to store the number of unique domain / email identified per named account
-			    Map<String, Integer> map = new HashMap<String, Integer>();
+			    Map<String, Integer> resultsDistributionMap = new HashMap<String, Integer>();
 				for (int r = 1; r <= accountsSheet.getLastRowNum(); r++) {
 					Row row = accountsSheet.getRow(r);
-					Cell companyDomainCell = row.getCell(0);
-					map.put(companyDomainCell.toString(), 0);
+					Cell companyDomainCell = row.getCell(1);
+					resultsDistributionMap.put(companyDomainCell.toString(), 0);
+				}
+				
+				// HashMap to store the company names associated with domains
+			    Map<String, String> domainAccountMap = new HashMap<String, String>();
+				for (int r = 1; r <= accountsSheet.getLastRowNum(); r++) {
+					Row row = accountsSheet.getRow(r);
+					String companyDomainCell = row.getCell(1).toString();
+					String companyNameCell = row.getCell(0).toString();
+					domainAccountMap.put(companyDomainCell, companyNameCell);
 				}
 				
 				// style white fonts
@@ -111,9 +120,6 @@ public class ExcelEmailBuilder {
 				
 				// Keeps track of # of unidentified domain names
 				int domainsNotFound = 0;
-				
-				// Keeps track of # of rows where domain & email are identified
-				int nonEmptyRows = 0;
 				
 				// Keeps track of # of rows without any mutual remote connections
 				// where the name shows up as "LinkedIn Member"
@@ -256,7 +262,7 @@ public class ExcelEmailBuilder {
 							Row accountRow = accountsSheet.getRow(i);
 							domainName = null;
 							// for each row, iterate across account name columns to find a match
-							for(int c = 2; c < accountRow.getLastCellNum(); c++) {
+							for(int c = 3; c < accountRow.getLastCellNum(); c++) {
 								Cell accountNameCell = accountRow.getCell(c);
 								if (cellIsEmpty(accountNameCell)) {
 									// No need to continue to check empty cells if there 
@@ -268,19 +274,19 @@ public class ExcelEmailBuilder {
 								// check for boolean operator AND in the input sheet account name cells
 								if (accountNameString.contains(" and ")) {
 									if (splitCellCheck(accountNameString, accountName, currentName, titleName) == true) {
-										domainName = accountRow.getCell(0).toString();
+										domainName = accountRow.getCell(1).toString();
 										// This cell associates the correct email format structure with each domain
 										// which is stored in the emailStructureMap 
-										Cell emailTypeCell = accountRow.getCell(1);
+										Cell emailTypeCell = accountRow.getCell(2);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										// Success! Exit this loop for this once contact check
 										break search;
 									};
 								} else if (cellCheck(accountNameString, accountName, currentName, titleName) == true) {
-										domainName = accountRow.getCell(0).toString();
+										domainName = accountRow.getCell(1).toString();
 										// This cell associates the correct email format structure with each domain
 										// which is stored in the emailStructureMap 
-										Cell emailTypeCell = accountRow.getCell(1);
+										Cell emailTypeCell = accountRow.getCell(2);
 										emailStructureMap.put(domainName, (int) emailTypeCell.getNumericCellValue());
 										// Success! Exit this loop for this once contact check
 										break search;
@@ -298,7 +304,7 @@ public class ExcelEmailBuilder {
 					// Update the HashMap with number of domain names identified
 					if (!domainName.contains("NONE FOUND") && !(lastName == null) 
 							&& !(lastName.length() == 1) && !(firstName.length() == 1)) {
-						map.put(domainName, map.get(domainName) + 1);
+						resultsDistributionMap.put(domainName, resultsDistributionMap.get(domainName) + 1);
 					}
 					
 					// Create email addresses
@@ -312,13 +318,11 @@ public class ExcelEmailBuilder {
 						{
 							// Cases with FirstInitial + LastName@domainName
 							case 1:
-								nonEmptyRows++;
 								email = firstName.substring(0, 1) + lastName + "@" + domainName; 
 								break;
 								
 							// Cases with FirstName.MiddleInitial(if available).LastName@domainName
 							case 2:
-								nonEmptyRows++;
 								if (middleName != null) {
 									email = firstName + "." + middleName.substring(0, 1) + lastName + "@" + domainName;
 								} else {
@@ -328,43 +332,36 @@ public class ExcelEmailBuilder {
 							
 							// Cases with FirstName.LastName@domainName
 							case 3:
-								nonEmptyRows++;
 								email = firstName + "." + lastName + "@" + domainName; 
 								break;
 								
 							// Cases with LastName.FirstName@domainName
 							case 4:
-								nonEmptyRows++;
 								email = lastName + "." + firstName + "@" + domainName; 
 								break;							
 															
 							// Cases with LastName + FirstInitial@domainName
 							case 5:
-								nonEmptyRows++;
 								email = lastName + firstName.substring(0, 1) + "@" + domainName;
 								break;
 								
 							// Cases with LastName + FirstName@domainName
 							case 6:
-								nonEmptyRows++;
 								email = lastName + firstName + "@" + domainName;
 								break;
 								
 							// Cases with FirstName_LastName@domainName
 							case 7:
-								nonEmptyRows++;
 								email = firstName + "_" + lastName + "@" + domainName;
 								break;
 								
 							// Cases with LastName-FirstName@domain.com
 							case 8:
-								nonEmptyRows++;
 								email = lastName + "-" + firstName + "@" + domainName;
 								break;
 								
 							// Cases with first 6 letters of LastName + FirstInitial@domainName
 							case 9:
-								nonEmptyRows++;
 								if (lastName == null) {
 									email = firstName + "@" + domainName;
 								} else if (lastName.length() > 6) {
@@ -376,7 +373,6 @@ public class ExcelEmailBuilder {
 								
 							// Cases with first 6 letters of LastName + FirstInitial + MiddleInitial@domainName
 							case 10:
-								nonEmptyRows++;
 								if (lastName == null) {
 									email = firstName + "@" + domainName;
 								} else if (lastName.length() > 6 && middleName != null) {
@@ -432,7 +428,7 @@ public class ExcelEmailBuilder {
 				summaryTitleRow.createCell(1).setCellValue("Total Found");
 				
 				// Sort map of count of successful domain matches (from largest to smallest)
-				Map<String, Integer> descendingMap = sortByValue(map);
+				Map<String, Integer> descendingMap = sortByValue(resultsDistributionMap);
 				
 				// In summary sheet enter total number of results per account (from largest to smallest)
 				Iterator<Entry<String, Integer>> it = descendingMap.entrySet().iterator();
@@ -492,6 +488,7 @@ public class ExcelEmailBuilder {
 					// Create cells in marketo sheet to populate
 					Cell marketoFirstName = marketoRow.createCell(0);
 					Cell marketoLastName = marketoRow.createCell(1);
+					Cell marketoCompanyName = marketoRow.createCell(2);
 					Cell marketoEmail = marketoRow.createCell(3);
 					Cell marketoCountry = marketoRow.createCell(9);
 					Cell marketoOriginalLeadSourceDescription = marketoRow.createCell(10);
@@ -531,6 +528,17 @@ public class ExcelEmailBuilder {
 					String dataMinerLastName = dataMinerRow.getCell(10).toString();
 					String dataMinerEmail = dataMinerRow.getCell(12).toString();
 					String dataMinerDomain = dataMinerRow.getCell(11).toString();
+					
+					// Get company name from domain name in HashMap to populate marketo sheet		
+					for (Map.Entry<String, String> entry : domainAccountMap.entrySet()) {
+					    String domain = entry.getKey();
+					    String company = entry.getValue();
+					    if (dataMinerEmail.contains(domain)) {
+					    	String companyName = company;
+					    	marketoCompanyName.setCellValue(company);
+					    	break;
+					    }
+					}
 					
 					// Populate contact info in marketo sheet
 					if (dataMinerDomain.contains("NONE FOUND")) {

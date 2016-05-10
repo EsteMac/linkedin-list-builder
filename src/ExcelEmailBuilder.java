@@ -37,6 +37,18 @@ public class ExcelEmailBuilder {
 				Sheet summarySheet = workbook.createSheet("Summary");
 				Sheet marketoSheet = workbook.createSheet("Marketo");
 				
+				// Constants to populate for every contact in marketo tab
+				final String country = accountsSheet.getRow(0).getCell(1).toString();
+				final String originalLeadSource = accountsSheet.getRow(1).getCell(1).toString();
+				final String originalLeadSourceDescription = accountsSheet.getRow(2).getCell(1).toString();
+				final String mostRecentLeadSource = accountsSheet.getRow(3).getCell(1).toString();
+				final String mostRecentLeadSourceDescription = accountsSheet.getRow(4).getCell(1).toString();
+				final String agile = accountsSheet.getRow(0).getCell(4).toString();
+				final String productData = accountsSheet.getRow(1).getCell(4).toString();
+				final String paas = accountsSheet.getRow(2).getCell(4).toString();
+				final String labs = accountsSheet.getRow(3).getCell(4).toString();
+				final String pws = accountsSheet.getRow(4).getCell(4).toString();
+				
 				// Strings used to build email addresses
 				String fullName;
 				String firstName;
@@ -401,6 +413,7 @@ public class ExcelEmailBuilder {
 					}
 				}
 				
+
 				// Format success percentage
 				DecimalFormat df = new DecimalFormat("#.##");
 				df.setRoundingMode(RoundingMode.HALF_UP);
@@ -490,6 +503,65 @@ public class ExcelEmailBuilder {
 				marketoTitleRow.createCell(17).setCellValue("PaaS");
 				marketoTitleRow.createCell(18).setCellValue("Labs");
 				marketoTitleRow.createCell(19).setCellValue("PWS");
+				
+				// Populate Marketo sheet
+				int rowDelta = 0;
+				for (int r = 1; r <= dataMinerSheet.getLastRowNum(); r++) {
+					Row dataMinerRow = dataMinerSheet.getRow(r);
+					Row marketoRow = marketoSheet.createRow(r - rowDelta);
+					
+					// Create cells in marketo sheet to populate
+					Cell marketoFirstName = marketoRow.createCell(0);
+					Cell marketoLastName = marketoRow.createCell(1);
+					Cell marketoEmail = marketoRow.createCell(3);
+					Cell marketoCountry = marketoRow.createCell(9);
+					Cell marketoOriginalLeadSourceDescription = marketoRow.createCell(10);
+					Cell marketoOriginalLeadSource = marketoRow.createCell(11);
+					Cell marketoMostRecentLeadSource = marketoRow.createCell(12);
+					Cell marketoMostRecentLeadSourceDescription = marketoRow.createCell(13);
+					Cell marketoAgile = marketoRow.createCell(15);
+					Cell marketoProductData = marketoRow.createCell(16);
+					Cell marketoPaaS = marketoRow.createCell(17);
+					Cell marketoLabs = marketoRow.createCell(18);
+					Cell marketoPWS = marketoRow.createCell(19);
+					
+					// Populate constants for all contacts
+					marketoCountry.setCellValue(country);
+					marketoOriginalLeadSourceDescription.setCellValue(originalLeadSourceDescription);
+					marketoOriginalLeadSource.setCellValue(originalLeadSource);
+					marketoMostRecentLeadSource.setCellValue(mostRecentLeadSource);
+					marketoMostRecentLeadSourceDescription.setCellValue(mostRecentLeadSourceDescription);
+					if (!agile.isEmpty()) {
+						marketoAgile.setCellValue(agile);
+					}
+					if (!productData.isEmpty()) {
+						marketoProductData.setCellValue(productData);
+					}
+					if (!paas.isEmpty()) {
+						marketoPaaS.setCellValue(paas);
+					}
+					if (!labs.isEmpty()) {
+						marketoLabs.setCellValue(labs);
+					}
+					if (!pws.isEmpty()) {
+						marketoPWS.setCellValue(pws);
+					}
+					
+					// Get contact info from data miner sheet to populate marketo sheet
+					String dataMinerFirstName = dataMinerRow.getCell(8).toString();
+					String dataMinerLastName = dataMinerRow.getCell(10).toString();
+					String dataMinerEmail = dataMinerRow.getCell(12).toString();
+					String dataMinerDomain = dataMinerRow.getCell(11).toString();
+					
+					// Populate contact info in marketo sheet
+					if (dataMinerDomain.contains("NONE FOUND")) {
+						rowDelta++;
+					} else {
+						marketoFirstName.setCellValue(dataMinerFirstName);
+						marketoLastName.setCellValue(dataMinerLastName);
+						marketoEmail.setCellValue(dataMinerEmail);
+					}
+				}
 				
 				// Resize columns in Marketo sheet to fit data
 				for (int col = 0; col < marketoTitleRow.getLastCellNum(); col++) {

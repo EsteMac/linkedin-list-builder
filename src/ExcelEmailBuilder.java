@@ -535,7 +535,7 @@ public class ExcelEmailBuilder {
 					    String company = entry.getValue();
 					    if (dataMinerEmail.contains(domain)) {
 					    	String companyName = company;
-					    	marketoCompanyName.setCellValue(company);
+					    	marketoCompanyName.setCellValue(companyName);
 					    	break;
 					    }
 					}

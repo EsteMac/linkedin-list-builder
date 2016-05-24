@@ -58,7 +58,8 @@ public class ExcelCompareLists {
 						Row compareRow = marketoSheet.getRow(c);
 						Cell marketoEmailCell = compareRow.getCell(MARKETO_EMAIL_COLUMN_INDEX);
 						// Compare content of both cells
-						if (marketoEmailCell.toString() == registeredEmailCell.toString()) {
+						if ((marketoEmailCell.toString() == registeredEmailCell.toString())
+								&& !registeredEmailCell.toString().isEmpty()) {
 							duplicateContacts++;
 							System.out.println("FOUND COMMON ENTRY: " + registeredEmailCell.toString());
 							// Highlight common contact row on registered list

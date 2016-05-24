@@ -47,8 +47,20 @@ public class ExcelCompareLists {
 		        styleBlueWhite.setAlignment(CellStyle.ALIGN_CENTER);
 		        styleBlueWhite.setFont(whiteFont);
 		        styleBlueWhite.setWrapText(true);
+		        
+				// Remove rows with no email address from the first sheet
+				for (int r = 1; r <= registeredSheet.getLastRowNum(); r++) {
+					Row row = registeredSheet.getRow(r);
+					Cell registeredEmailCell = row.getCell(REGISTERED_EMAIL_COLUMN_INDEX);
+					// Check for empty rows
+				    if(registeredEmailCell == null){
+				    	registeredSheet.shiftRows(r + 1, registeredSheet.getLastRowNum(), -1);
+				        r--;
+				        continue;
+				    }
+				}
 				
-				// Find and highlight duplicate contacts
+				// Find and highlight contacts appearing in both sheets
 				System.out.println("SEARCHING FOR CONTACTS ON BOTH SHEETS...");
 				for (int r = 1; r <= registeredSheet.getLastRowNum(); r++) {
 					Row row = registeredSheet.getRow(r);

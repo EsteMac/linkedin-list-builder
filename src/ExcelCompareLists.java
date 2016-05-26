@@ -60,6 +60,18 @@ public class ExcelCompareLists {
 				    }
 				}
 				
+				// Remove rows with no email address from the second sheet
+				for (int r = 1; r <= marketoSheet.getLastRowNum(); r++) {
+					Row row = marketoSheet.getRow(r);
+					Cell marketoEmailCell = row.getCell(MARKETO_EMAIL_COLUMN_INDEX);
+					// Check for empty rows
+				    if(marketoEmailCell == null) {
+				    	marketoSheet.shiftRows(r + 1, marketoSheet.getLastRowNum(), -1);
+				        r--;
+				        continue;
+				    }
+				}
+				
 				// Find and highlight contacts appearing in both sheets
 				System.out.println("SEARCHING FOR CONTACTS ON BOTH SHEETS...");
 				for (int r = 1; r <= registeredSheet.getLastRowNum(); r++) {
@@ -71,7 +83,8 @@ public class ExcelCompareLists {
 						Cell marketoEmailCell = compareRow.getCell(MARKETO_EMAIL_COLUMN_INDEX);
 						// Compare content of both cells
 						if ((marketoEmailCell.toString() == registeredEmailCell.toString())
-								&& !registeredEmailCell.toString().isEmpty()) {
+								&& !registeredEmailCell.toString().isEmpty()
+								&& !marketoEmailCell.toString().isEmpty()) {
 							duplicateContacts++;
 							System.out.println("FOUND COMMON ENTRY: " + registeredEmailCell.toString());
 							// Highlight common contact row on registered list

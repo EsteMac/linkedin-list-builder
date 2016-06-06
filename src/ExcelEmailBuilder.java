@@ -324,7 +324,7 @@ public class ExcelEmailBuilder {
 							// Cases with FirstName.MiddleInitial(if available).LastName@domainName
 							case 2:
 								if (middleName != null) {
-									email = firstName + "." + middleName.substring(0, 1) + lastName + "@" + domainName;
+									email = firstName + "." + middleName.substring(0, 1) + "." + lastName + "@" + domainName;
 								} else {
 									email = firstName + "." + lastName + "@" + domainName;
 								}
@@ -385,6 +385,15 @@ public class ExcelEmailBuilder {
 									email = lastName + firstName.substring(0, 1) + "@" + domainName;
 								} else {
 									email = lastName + firstName.substring(0, 1) + "@" + domainName;
+								}
+								break;
+								
+							// Cases with FirstName_MiddleInitial(if available)_LastName@domainName
+							case 11:
+								if (middleName != null) {
+									email = firstName + "_" + middleName.substring(0, 1) + "_" + lastName + "@" + domainName;
+								} else {
+									email = firstName + "_" + lastName + "@" + domainName;
 								}
 								break;
 							

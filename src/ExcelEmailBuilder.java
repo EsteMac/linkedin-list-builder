@@ -397,6 +397,19 @@ public class ExcelEmailBuilder {
 								}
 								break;
 							
+							// Cases with first 6 letters of LastName + FirstInitial@domainName
+							case 12:
+								if (lastName == null) {
+									email = firstName + "@" + domainName;
+								} else if (lastName.length() > 6) {
+									email = lastName.substring(0, 6) + firstName.substring(0, 1) + "@" + domainName;
+								} else if (lastName.length() <= 6) {
+									email = lastName + firstName.substring(0, 1) + "@" + domainName;
+								} else {
+									email = lastName + firstName.substring(0, 1) + "@" + domainName;
+								}
+								break;
+							
 							// Default case
 							default:
 								System.out.println("UNABLE TO ID DOMAIN FOR: 'company': " + accountName + 

@@ -418,6 +418,17 @@ public class ExcelEmailBuilder {
 									email = firstName + "@" + domainName;
 								}
 								break;
+								
+							// Cases with LastName.FirstInitial + MiddleInitial(if available) @domainName
+							case 14:
+								if (lastName != null && middleName != null) {
+									email = lastName + "." + firstName.substring(0, 1) + middleName.substring(0, 1) + "@" + domainName;
+								} else if (lastName != null && middleName == null) {
+									email = lastName + "." + firstName.substring(0, 1) + "@" + domainName;
+								} else {
+									email = firstName + "@" + domainName;
+								}
+								break;
 							
 							// Default case
 							default:

@@ -409,6 +409,15 @@ public class ExcelEmailBuilder {
 									email = lastName + firstName.substring(0, 1) + "@" + domainName;
 								}
 								break;
+								
+							// Cases with FirstNameLastName@domainName
+							case 13:
+								if (lastName != null) {
+									email = firstName + lastName + "@" + domainName;
+								} else {
+									email = firstName + "@" + domainName;
+								}
+								break;
 							
 							// Default case
 							default:
